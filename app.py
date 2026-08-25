@@ -1,35 +1,44 @@
 
+
 import streamlit as st
 
-st.set_page_config(page_title="Flas Analista - En Vivo", page_icon="⚽", layout="wide")
+st.set_page_config(page_title="Flas Analista", page_icon="⚽", layout="centered")
 
-st.title("⚽ Flas Analista | Panel Táctico en Directo")
-st.markdown("---")
+st.title("⚽ Flas Analista - Panel Táctico")
+st.write("Control en vivo para análisis y jugadas")
 
-# Barra lateral para configurar el partido
-st.sidebar.header("⚙️ Configuración del Partido")
-equipo_local = st.sidebar.text_input("Equipo Local", "Local")
-equipo_visitante = st.sidebar.text_input("Equipo Visitante", "Visitante")
-minuto_actual = st.sidebar.slider("Minuto del Partido", 0, 90, 1)
+st.divider()
 
-st.subheader(f"📊 {equipo_local} vs {equipo_visitante} (Minuto {minuto_actual}')")
+# Configuración del partido
+st.subheader("📌 Partido en Curso")
+local = st.text_input("Equipo Local", "Junior")
+visitante = st.text_input("Equipo Visitante", "Rival")
+minuto = st.slider("Minuto actual", 1, 90, 10)
 
-# Métricas rápidas en columnas
-col1, col2, col3, col4 = st.columns(4)
+st.divider()
+
+# Estadísticas clave
+st.subheader(f"📊 Estadísticas: {local} vs {visitante} (Min. {minuto}')")
+
+col1, col2 = st.columns(2)
 
 with col1:
-    st.metric(label="Córners Totales", value="0", delta="Tendencia Alta")
+    st.markdown(f"**{local}**")
+    remates_l = st.number_input("Remates a puerta", 0, 30, 2, key="rl")
+    corners_l = st.number_input("Córners", 0, 20, 1, key="cl")
+
 with col2:
-    st.metric(label="Faltas Acumuladas", value="0", delta="Árbitro Tarjetero")
-with col3:
-    st.metric(label="Remates a Puerta", value="0")
-with col4:
-    st.metric(label="Presión Alta", value="Media")
+    st.markdown(f"**{visitante}**")
+    remates_v = st.number_input("Remates a puerta", 0, 30, 1, key="rv")
+    corners_v = st.number_input("Córners", 0, 20, 0, key="cv")
 
-st.markdown("---")
-st.text("💡 Escribe aquí abajo tu lectura en caliente o notas del jugador clave:")
-nota_en_vivo = st.text_area("Observación táctica:")
+st.divider()
 
-if st.button("Guardar / Actualizar Análisis"):
-    st.success("¡Datos actualizados con éxito en el sistema!")
-              
+# Lectura rápida
+st.subheader("💡 Lectura Táctica")
+if remates_l > remates_v:
+    st.success(f"**{local}** manda en campo rival y genera más peligro.")
+elif remates_v > remates_l:
+    st.warning(f"**{visitante}** es más punzante con menos llegadas.")
+else:
+    st.info("Partido parejo, bloque medio muy disputado.")
