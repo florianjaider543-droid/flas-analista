@@ -9,18 +9,20 @@ st.set_page_config(
 st.title("⚽ Flas Analista | Motor Previa & Apuestas")
 st.markdown("### Centro de Inteligencia Táctica (Córners, Faltas y Jugadores)")
 
-# Formulario principal de entrada de datos (Corregido)
+# Formulario principal con campos vacíos para evitar errores en móviles
 with st.form("analisis_form"):
   st.subheader("1. Configuración del Encuentro")
   col_t1, col_t2 = st.columns(2)
   with col_t1:
-    local = st.text_input("Equipo Local", "Ej. Junior")
+    local = st.text_input("Equipo Local", value="", placeholder="Ej. Junior")
   with col_t2:
-    visitante = st.text_input("Equipo Visitante", "Ej. América de Cali")
+    visitante = st.text_input(
+        "Equipo Visitante", value="", placeholder="Ej. América"
+    )
 
   st.subheader("2. Carga de Referencia (Opcional)")
   uploaded_file = st.file_uploader(
-      "Sube captura de alineación, estadísticas o cuotas (BetPlay)",
+      "Sube captura de alineación o cuotas (BetPlay)",
       type=["jpg", "jpeg", "png"],
   )
 
@@ -43,7 +45,7 @@ with st.form("analisis_form"):
     )
   with col_m2:
     jugador = st.text_input(
-        "Jugador Clave / Extremo / Volante", "Ej. Enamorado / Vergara"
+        "Jugador Clave", value="", placeholder="Ej. Carlos Bacca"
     )
     intensidad = st.slider("Intensidad de Faltas (1 a 10)", 1, 10, 7)
 
@@ -55,42 +57,47 @@ if uploaded_file is not None:
 
 # Procesamiento dinámico al enviar el formulario
 if submitted:
-  st.success(f"¡Análisis generado con éxito para {local} vs {visitante}!")
-  st.markdown("---")
-  st.markdown(f"### 🎯 Reporte de Jugadas Clave: {local} vs {visitante}")
+  # Si dejan los campos vacíos, usa un texto genérico para evitar errores feos
+  eq_local = local if local.strip() != "" else "Local"
+  eq_vis = visitante if visitante.strip() != "" else "Visitante"
+  jug_clave = jugador if jugador.strip() != "" else "el jugador clave"
 
-  # Lógica 100% dinámica para Córners según el número ingresado
+  st.success(f"¡Análisis generado con éxito para {eq_local} vs {eq_vis}!")
+  st.markdown("---")
+  st.markdown(f"### 🎯 Reporte de Jugadas Clave: {eq_local} vs {eq_vis}")
+
+  # Lógica 100% dinámica para Córners
   if prom_corners >= 9.5:
     c_msg = (
-        f"Alta tendencia proyectada por bandas entre {local} y {visitante}."
+        f"Alta tendencia proyectada por bandas entre {eq_local} y {eq_vis}."
         f" Considerar mercado de **Más de {prom_corners - 1.0} córners**."
     )
   elif prom_corners >= 8.0:
     c_msg = (
-        f"Dinámica moderada en costados para este {local} vs {visitante}."
+        f"Dinámica moderada en costados para este {eq_local} vs {eq_vis}."
         f" Apuntar a una línea prudente de **Más de {prom_corners - 1.5}"
         f" córners**."
     )
   else:
     c_msg = (
-        f"Encuentro trabado en zona medular entre {local} y {visitante}. Se"
+        f"Encuentro trabado en zona medular entre {eq_local} y {eq_vis}. Se"
         f" sugiere evitar líneas altas de tiros de esquina."
     )
 
   st.markdown(f"* **Mercado de Córners ({prom_corners} proj.):** {c_msg}")
 
-  # Lógica 100% dinámica para Faltas y Jugadores según el árbitro y la intensidad
+  # Lógica para Faltas y Jugadores
   if "Estricto" in arbitro or intensidad >= 7:
     f_msg = (
         f"Con un juez de perfil estricto y una intensidad calculada de"
         f" {intensidad}/10, hay que vigilar de cerca las infracciones y duelos"
-        f" individuales de **{jugador}**."
+        f" individuales de **{jug_clave}**."
     )
   else:
     f_msg = (
         f"Escenario de menor fricción táctica. El impacto de faltas sobre"
-        f" **{jugador}** baja; enfocar la atención en sus estadísticas directas"
-        f" de remates al arco."
+        f" **{jug_clave}** baja; enfocar la atención en sus estadísticas"
+        f" directas de remates al arco."
     )
 
   st.markdown(f"* **Faltas y Duelos Individuales:** {f_msg}")
