@@ -1,109 +1,145 @@
 import streamlit as st
 
 st.set_page_config(
-    page_title="Flas Analista - Centro Táctico",
-    page_icon="⚽",
-    layout="centered",
+    page_title="Flas Analista - Motor Maestro", page_icon="⚽", layout="centered"
 )
 
-st.title("⚽ Flas Analista | Motor Previa & Apuestas")
-st.markdown("### Centro de Inteligencia Táctica (Córners, Faltas y Jugadores)")
+st.title("⚽ Flas Analista | Motor Matemático de Apuestas")
+st.markdown(
+    "### Centro de Cálculo Táctico (Córners, Faltas y Estadísticas de Jugador)"
+)
 
-# Formulario principal con campos vacíos para evitar errores en móviles
-with st.form("analisis_form"):
-  st.subheader("1. Configuración del Encuentro")
-  col_t1, col_t2 = st.columns(2)
-  with col_t1:
-    local = st.text_input("Equipo Local", value="", placeholder="Ej. Junior")
-  with col_t2:
-    visitante = st.text_input(
-        "Equipo Visitante", value="", placeholder="Ej. América"
+with st.form("motor_maestro_form"):
+  st.subheader("1. Datos del Encuentro")
+  col_1, col_2 = st.columns(2)
+  with col_1:
+    local = st.text_input("Equipo Local", value="", placeholder="Ej. Millonarios")
+  with col_2:
+    visitante = (
+        format_vis := st.text_input(
+            "Equipo Visitante", value="", placeholder="Ej. Santa Fe"
+        )
     )
 
-  st.subheader("2. Carga de Referencia (Opcional)")
-  uploaded_file = st.file_uploader(
-      "Sube captura de alineación o cuotas (BetPlay)",
-      type=["jpg", "jpeg", "png"],
-  )
-
-  st.subheader("3. Variables Estadísticas y Arbitraje")
-  col_m1, col_m2 = st.columns(2)
-  with col_m1:
+  st.subheader("2. Estadísticas y Métricas Clave")
+  col_3, col_4 = st.columns(2)
+  with col_3:
     prom_corners = st.number_input(
-        "Línea / Promedio Córners",
+        "Promedio / Línea de Córners",
         min_value=0.0,
         max_value=20.0,
         value=9.5,
         step=0.5,
     )
-    arbitro = st.selectbox(
-        "Perfil del Árbitro",
+    factor_arbitro = st.selectbox(
+        "Perfil y Rigor del Árbitro",
         [
-            "Estricto / Tarjetero (Alto registro de faltas)",
-            "Permisivo / Deja jugar (Bajo roce)",
+            (
+                "Muy Tarjetero / Pita todo (Factor Alto 1.4)",
+                1.4,
+            ),
+            (
+                "Neutral / Estándar (Factor Normal 1.0)",
+                1.0,
+            ),
+            (
+                "Permisivo / Deja jugar (Factor Bajo 0.7)",
+                0.7,
+            ),
         ],
+        format_func=lambda x: x[0],
     )
-  with col_m2:
+  with col_4:
     jugador = st.text_input(
-        "Jugador Clave", value="", placeholder="Ej. Carlos Bacca"
+        "Jugador Clave (Extremo / Volante)",
+        value="",
+        placeholder="Ej. Daniel Ruiz",
     )
-    intensidad = st.slider("Intensidad de Faltas (1 a 10)", 1, 10, 7)
+    faltas_jugador = st.number_input(
+        "Promedio de Faltas Cometidas/Recibidas del Jugador",
+        min_value=0.0,
+        max_value=10.0,
+        value=2.0,
+        step=0.5,
+    )
 
-  submitted = st.form_submit_button("Analizar y Generar Jugada 🚀")
+  submitted = st.form_submit_button("Calcular Jugada Maestra 🚀")
 
-# Mostrar imagen si el usuario la sube
-if uploaded_file is not None:
-  st.image(uploaded_file, caption="Referencia cargada", use_container_width=True)
-
-# Procesamiento dinámico al enviar el formulario
 if submitted:
-  # Si dejan los campos vacíos, usa un texto genérico para evitar errores feos
-  eq_local = local if local.strip() != "" else "Local"
-  eq_vis = visitante if visitante.strip() != "" else "Visitante"
-  jug_clave = jugador if jugador.strip() != "" else "el jugador clave"
+  # Limpieza de variables
+  eq_l = local.strip() if local.strip() else "Equipo Local"
+  eq_v = visitante.strip() if visitante.strip() else "Equipo Visitante"
+  j_clv = jugador.strip() if jugador.strip() else "Jugador Clave"
+  arbt_val = factor_arbitro[1]
 
-  st.success(f"¡Análisis generado con éxito para {eq_local} vs {eq_vis}!")
+  st.success(f"¡Cálculo matemático completado para {eq_l} vs {eq_v}!")
   st.markdown("---")
-  st.markdown(f"### 🎯 Reporte de Jugadas Clave: {eq_local} vs {eq_vis}")
+  st.markdown(f"### 🎯 JUGADA MAESTRA | {eq_l} vs {eq_v}")
 
-  # Lógica 100% dinámica para Córners
+  # --- CÁLCULO MATEMÁTICO DE CÓRNERS ---
   if prom_corners >= 9.5:
-    c_msg = (
-        f"Alta tendencia proyectada por bandas entre {eq_local} y {eq_vis}."
-        f" Considerar mercado de **Más de {prom_corners - 1.0} córners**."
+    linea_corner_sugerida = prom_corners - 1.0
+    analisis_corner = (
+        f"Alta presión en carriles externos. El promedio proyectado de"
+        f" **{prom_corners} córners** respalda entrarle al mercado de **Más de"
+        f" {linea_corner_sugerida} Tiros de Esquina**."
     )
   elif prom_corners >= 8.0:
-    c_msg = (
-        f"Dinámica moderada en costados para este {eq_local} vs {eq_vis}."
-        f" Apuntar a una línea prudente de **Más de {prom_corners - 1.5}"
-        f" córners**."
+    linea_corner_sugerida = prom_corners - 1.0
+    analisis_corner = (
+        f"Flujo de juego equilibrado en bandas. Se recomienda una línea"
+        f" prudente de **Más de {linea_corner_sugerida} Córners** para asegurar"
+        f" cuota en BetPlay."
     )
   else:
-    c_msg = (
-        f"Encuentro trabado en zona medular entre {eq_local} y {eq_vis}. Se"
-        f" sugiere evitar líneas altas de tiros de esquina."
+    analisis_corner = (
+        f"Bloque defensivo cerrado y poca profundidad por costados ({prom_corners}"
+        f" proyectados). Se aconseja **evitar** mercados altos de córners o"
+        f" buscar un 'Menos'."
     )
 
-  st.markdown(f"* **Mercado de Córners ({prom_corners} proj.):** {c_msg}")
+  st.markdown(f"* **Análisis de Córners:** {analisis_corner}")
 
-  # Lógica para Faltas y Jugadores
-  if "Estricto" in arbitro or intensidad >= 7:
-    f_msg = (
-        f"Con un juez de perfil estricto y una intensidad calculada de"
-        f" {intensidad}/10, hay que vigilar de cerca las infracciones y duelos"
-        f" individuales de **{jug_clave}**."
+  # --- CÁLCULO MATEMÁTICO DE FALTAS Y JUGADOR ---
+  indice_riesgo_faltas = round(faltas_jugador * arbt_val, 2)
+
+  if indice_riesgo_faltas >= 2.5:
+    analisis_faltas = (
+        f"Índice de fricción alto ({indice_riesgo_faltas} calculado). Con el"
+        f" promedio de **{j_clv}** ({faltas_jugador}) cruzado con el carácter"
+        f" del juez, la jugada clave es ir por **Más de 1.5 faltas /"
+        f" amonestación** de este jugador."
     )
   else:
-    f_msg = (
-        f"Escenario de menor fricción táctica. El impacto de faltas sobre"
-        f" **{jug_clave}** baja; enfocar la atención en sus estadísticas"
-        f" directas de remates al arco."
+    analisis_faltas = (
+        f"Índice de fricción moderado/bajo ({indice_riesgo_faltas} calculado)."
+        f" El contexto favorece que **{j_clv}** se centre en generación y"
+        f" remates directos al arco en lugar de acumular infracciones."
     )
 
-  st.markdown(f"* **Faltas y Duelos Individuales:** {f_msg}")
-
-  st.markdown("---")
-  st.info(
-      "💡 **Nota Táctica:** Contasta este bloque dinámico con tu lectura de"
-      " BetPlay y deja lista tu jugada antes del pitazo inicial."
+  st.markdown(
+      f"* **Análisis Individual ({j_clv}):** {analisis_faltas}"
   )
+
+  # --- CONSTRUCCIÓN DE LA COMBINADA / JUGADA MAESTRA FINAL ---
+  st.markdown("---")
+  st.subheader("🔥 Selección Combinada para BetPlay:")
+
+  if prom_corners >= 9.5 and indice_riesgo_faltas >= 2.5:
+    apuesta_final = (
+        f"**Combinada Sugerida:** Más de {prom_corners - 1.5} córners en el"
+        f" partido + {j_clv} registra 2 o más acciones de falta/duelos"
+        f" disputados."
+    )
+  elif prom_corners >= 8.0:
+    apuesta_final = (
+        f"**Selección Simple Directa:** Más de {prom_corners - 1.0} tiros de"
+        f" esquina totales para {eq_l} y {eq_v}."
+    )
+  else:
+    apuesta_final = (
+        f"**Selección Táctica:** Partido cerrado. Buscar líneas asiáticas"
+        f" reducidas o mercado de remates a puerta de {j_clv}."
+    )
+
+  st.info(apuesta_final)
