@@ -9,8 +9,8 @@ st.set_page_config(
 st.title("⚽ Flas Analista | Motor Previa & Apuestas")
 st.markdown("### Centro de Inteligencia Táctica (Córners, Faltas y Jugadores)")
 
-# Formulario principal de entrada de datos
-with st.analisis_form := st.form("analisis_form"):
+# Formulario principal de entrada de datos (Corregido)
+with st.form("analisis_form"):
   st.subheader("1. Configuración del Encuentro")
   col_t1, col_t2 = st.columns(2)
   with col_t1:
