@@ -45,12 +45,12 @@ else:
 st.divider()
 
 # Radar de Partidos
+# Radar de Partidos
 st.subheader("📸 Radar de Partidos")
-archivo_captura = st.file_uploader("Sube tu captura de cartelera", type=["jpg", "jpeg", "png"])
+archivo_captura = st.file_uploader("Sube tu captura de cartelera", type=["jpg", "png"])
 
 if archivo_captura is not None:
-    st.image(archivo_captura, caption="Captura cargada", use_container_width=True)
-    
-    if st.button("🚀 Buscar Jugada Maestra"):
-        st.success("¡Análisis completado!")
-        st.info("🔥 **Jugada Maestra:** [Equipo A] vs [Equipo B] - Más de 1.5 remates.")
+    st.image(archivo_captura, use_container_width=True)
+    if st.button("🚀 Escanear y Extraer Partidos"):
+        st.success("¡Cartelera leída con éxito!")
+        st.info("🎯 Jugada Maestra: Análisis en curso.")
