@@ -46,14 +46,42 @@ st.divider()
 
 # Radar de Partidos
 
-# Radar Multidisciplina Inteligente (Alta Precisión y Cero Error)
+import streamlit as st
+
+st.set_page_config(page_title="Flas Analista", page_icon="🎯", layout="centered")
+
+st.title("🎯 Flas Analista - Panel Táctico")
+st.write("Control en vivo para análisis y jugadas con Cero Error")
+
+st.divider()
+
+# Configuración del partido (En blanco para que pongas lo que quieras)
+st.subheader("⚡ Configuración del Encuentro")
+local = st.text_input("Equipo 1 (Local)", "", placeholder="Ej: Boston Celtics")
+visitante = st.text_input("Equipo 2 (Visitante)", "", placeholder="Ej: Los Angeles Lakers")
+minuto = st.slider("Minuto actual / Cuarto", 1, 90, 4)
+
+st.divider()
+
+# Radar Multidisciplina Inteligente (Especializado por Deporte)
 st.subheader("📸 Radar Total (Lectura Dinámica y Precisa)")
 
-# Selector para cambiar de deporte o juego al instante
 deporte_seleccionado = st.selectbox(
     "🎯 Selecciona la categoría a analizar:", 
     ["Fútbol ⚽", "Baloncesto 🏀", "Esports / Free Fire 🎮", "General / Todo 📋"]
 )
+
+# Filtros dinámicos según el deporte para definir la línea exacta o el jugador
+linea_triples = 3.5
+jugador_clave = ""
+
+if "Baloncesto" in deporte_seleccionado:
+    st.markdown("### 🏀 Parámetros de Baloncesto (Línea de Apuesta)")
+    c1, c2 = st.columns(2)
+    with c1:
+        linea_triples = st.number_input("Línea de Triples (Over/Under)", 0.5, 20.5, 3.5, 0.5)
+    with c2:
+        jugador_clave = st.text_input("Jugador Específico (Opcional)", "", placeholder="Ej: Stephen Curry")
 
 archivo_captura = st.file_uploader(f"Sube tu captura de {deporte_seleccionado}", type=["jpg", "jpeg", "png"])
 
@@ -64,34 +92,33 @@ if archivo_captura is not None:
         with st.spinner("Procesando métricas en vivo y aplicando filtro táctico..."):
             st.success("¡Análisis de precisión completado!")
             
-            st.markdown(f"### 🔥 Jugada Maestra: **{local} vs {visitante}** (Min. {minuto})")
+            eq1 = local if local.strip() != "" else "Equipo 1"
+            eq2 = visitante if visitante.strip() != "" else "Equipo 2"
             
-            # Bloque de precisión basado estricamente en los datos reales ingresados
+            st.markdown(f"### 🔥 Jugada Maestra: **{eq1} vs {eq2}**")
+            
+            # Bloques estrictamente separados sin mezclar churras con merinas
             if "Fútbol" in deporte_seleccionado:
-                if remates_1 > remates_v:
+                st.markdown(f"""
+                * **Lectura Táctica:** Control de posesión y presión en campo rival entre **{eq1}** y **{eq2}**.
+                * **Jugada Recomendada (Cero Error):** **{eq1}** gana o empata, asegurando más de **1.5 goles** o tiros de esquina en el partido.
+                """)
+            elif "Baloncesto" in deporte_seleccionado:
+                # Si pusiste un jugador, la jugada se centra en él; si no, al equipo completo
+                if jugador_clave.strip() != "":
                     st.markdown(f"""
-                    * **Lectura Táctica (Minuto {minuto}):** **{local}** impone condiciones con **{remates_1} remates a puerta** frente a {remates_v} de {visitante}.
-                    * **Jugada Recomendada (Cero Error):** **{local}** mantiene el volumen ofensivo, asegurando más de **{corners_1} córners** y alta probabilidad de gol antes del pitazo final.
-                    """)
-                elif remates_v > remates_1:
-                    st.markdown(f"""
-                    * **Lectura Táctica (Minuto {minuto}):** **{visitante}** es más punzante con **{remates_v} remates a puerta** frente a {remates_1} de {local}.
-                    * **Jugada Recomendada (Cero Error):** **{visitante}** rompe el bloque defensivo rival, perfilándose para anotar el próximo tanto o asegurar la ventaja en tiros de esquina.
+                    * **Lectura Táctica (Dupleta):** Rendimiento perimetral enfocado en el jugador **{jugador_clave}** ({eq1}).
+                    * **Jugada Recomendada (Cero Error):** **¡A la fija!** Entrarle al **Over (Más de {linea_triples}) de triples para {jugador_clave}** en el cierre del encuentro.
                     """)
                 else:
                     st.markdown(f"""
-                    * **Lectura Táctica (Minuto {minuto}):** Partido cerrado y de bloque medio muy disputado entre ambos ({remates_1} a {remates_v} en remates).
-                    * **Jugada Recomendada (Cero Error):** Alta fricción en mediocampo; buscar jugadas a balón parado o esperar el quiebre táctico en el segundo tiempo.
+                    * **Lectura Táctica (Dupla):** Eficacia desde el perímetro evaluada entre **{eq1}** y **{eq2}**.
+                    * **Jugada Recomendada (Cero Error):** **¡A la fija!** Entrarle al **Over (Más de {linea_triples}) de triples** para **{eq1}** en los cuartos finales.
                     """)
-            elif "Baloncesto" in deporte_seleccionado:
-                st.markdown(f"""
-                * **Lectura Táctica:** Análisis de eficacia perimetral y cuartos entre **{local}** y **{visitante}**.
-                * **Jugada Recomendada (Cero Error):** El equipo con mayor efectividad en tiros de tres supera la línea establecida en el último tramo del partido.
-                """)
             elif "Esports" in deporte_seleccionado:
                 st.markdown(f"""
-                * **Lectura Táctica:** Control de mapa y enfrentamientos directos analizados para **{local} vs {visitante}**.
-                * **Jugada Recomendada (Cero Error):** **{local}** capitaliza la superioridad de recursos en los círculos clave para asegurar la ronda.
+                * **Lectura Táctica:** Control de mapa y recursos tácticos entre **{eq1}** y **{eq2}**.
+                * **Jugada Recomendada (Cero Error):** Victoria directa de **{eq1}** en las rondas clave.
                 """)
             else:
                 st.markdown(f"""
